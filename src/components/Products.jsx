@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { auth, db } from '../firebase';
-import { collection, addDoc, deleteDoc, doc, onSnapshot, query, where } from 'firebase/firestore';
+import { collection, addDoc, deleteDoc, doc, onSnapshot } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 
 const Products = () => {
@@ -10,34 +10,37 @@ const Products = () => {
 
   useEffect(() => {
     const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
-      setUser(user)
-      if (user) {
-        const productsRef = collection(db, 'products');
-        const q = query(productsRef, where('userId', '==', user.uid));
-        const unsubscribeSnapshot = onSnapshot(q, (snapshot) => {
-          const productsData = [];
-          snapshot.forEach((doc) => productsData.push({ ...doc.data(), id: doc.id }));
-          setProducts(productsData);
-        });
-        return () => unsubscribeSnapshot();
-      }
-    })
+      setUser(user);
+    });
 
-    return () => unsubscribeAuth();
-  }, [user])
+    const unsubscribeSnapshot = onSnapshot(collection(db, 'products'), (snapshot) => {
+      const productsData = [];
+      snapshot.forEach((doc) => productsData.push({ ...doc.data(), id: doc.id }));
+      setProducts(productsData);
+    });
+
+    return () => {
+      unsubscribeAuth();
+      unsubscribeSnapshot();
+    };
+  }, []);
 
   const handleAddProduct = async (e) => {
     e.preventDefault();
     try {
-      await addDoc(collection(db, 'products'), {
-        name: productName,
-        userId: user.uid,
-      });
-      setProductName('');
+      if (user) {
+        await addDoc(collection(db, 'products'), {
+          name: productName,
+          userId: user.uid,
+        });
+        setProductName('');
+      } else {
+        console.error("User is not logged in");
+      }
     } catch (error) {
       console.error("Error adding product: ", error);
     }
-  }
+  };
 
   const handleDeleteProduct = async (id) => {
     try {
@@ -45,7 +48,7 @@ const Products = () => {
     } catch (error) {
       console.error("Error deleting product: ", error);
     }
-  }
+  };
 
   return (
     <div>
