@@ -17,12 +17,12 @@ const Products = () => {
         const productsData = [];
         snapshot.forEach((doc) => productsData.push({ ...doc.data(), id: doc.id }));
         setProducts(productsData);
-      });
+      })
       return () => unsubscribeSnapshot();
-    });
+    })
 
     return () => unsubscribeAuth();
-  }, []);
+  }, [])
 
   const handleAddProduct = async (e) => {
     e.preventDefault();
@@ -32,14 +32,14 @@ const Products = () => {
         price: productPrice,
         description: productDescription,
         userId: user.uid,
-      });
+      })
       setProductName('');
       setProductPrice('');
       setProductDescription('');
     } catch (error) {
       console.error('Error adding product: ', error);
     }
-  };
+  }
 
   const handleDeleteProduct = async (id) => {
     try {
@@ -47,7 +47,7 @@ const Products = () => {
     } catch (error) {
       console.error('Error deleting product: ', error);
     }
-  };
+  }
 
   const handleLogout = async () => {
     try {
@@ -55,38 +55,43 @@ const Products = () => {
     } catch (error) {
       console.error('Error logging out: ', error);
     }
-  };
+  }
 
   return (
-    <div>
-      <h2>Products</h2>
-      <button onClick={handleLogout}>Logout</button>
-      <form onSubmit={handleAddProduct}>
-        <input
-          type="text"
-          value={productName}
-          onChange={(e) => setProductName(e.target.value)}
-          placeholder="Product Name"
-          required
-        />
-        <input
-          type="text"
-          value={productPrice}
-          onChange={(e) => setProductPrice(e.target.value)}
-          placeholder="Product Price"
-          required
-        />
-        <textarea
-          value={productDescription}
-          onChange={(e) => setProductDescription(e.target.value)}
-          placeholder="Product Description"
-          required
-        />
-        <button type="submit">Add Product</button>
+    <div className="container mx-auto">
+      <h2 className="text-3xl font-bold mb-6">Products</h2>
+      <button className="bg-blue-500 text-white py-2 px-4 rounded" onClick={handleLogout}>Logout</button>
+      <form onSubmit={handleAddProduct} className="my-6">
+        <div className="flex flex-col space-y-2">
+          <input
+            type="text"
+            value={productName}
+            onChange={(e) => setProductName(e.target.value)}
+            placeholder="Product Name"
+            className="border border-gray-300 rounded-md p-2"
+            required
+          />
+          <input
+            type="text"
+            value={productPrice}
+            onChange={(e) => setProductPrice(e.target.value)}
+            placeholder="Product Price"
+            className="border border-gray-300 rounded-md p-2"
+            required
+          />
+          <textarea
+            value={productDescription}
+            onChange={(e) => setProductDescription(e.target.value)}
+            placeholder="Product Description"
+            className="border border-gray-300 rounded-md p-2"
+            required
+          />
+          <button type="submit" className="bg-green-500 text-white py-2 px-4 rounded">Add Product</button>
+        </div>
       </form>
       <ul>
         {products.map((product) => (
-          <ProductCard key={product.id} product={product} userId={user && user.uid} onDelete={handleDeleteProduct} />
+          <ProductCard key={product.id} product={product} userId={user.uid} onDelete={handleDeleteProduct} />
         ))}
       </ul>
     </div>
@@ -100,19 +105,21 @@ const ProductCard = ({ product, userId, onDelete }) => {
     const fetchUserPhone = async () => {
       const userDoc = await getDoc(doc(db, 'users', product.userId));
       if (userDoc.exists()) {
-        setUserPhone(userDoc.data().phone)
+        setUserPhone(userDoc.data().phone);
       }
-    }
+    };
     fetchUserPhone();
-  }, [product.userId])
+  }, [product.userId]);
 
   return (
-    <li>
-      <h3>{product.name}</h3>
-      <p>{product.description}</p>
-      <p>Price: ${product.price}</p>
-      <p>Telefone do Vendedor: {userPhone}</p>
-      {product.userId === userId && <button onClick={() => onDelete(product.id)}>Delete</button>}
+    <li className="border rounded-md p-4 my-4">
+      <h3 className="text-xl font-semibold mb-2">{product.name}</h3>
+      <p className="mb-2">{product.description}</p>
+      <p className="mb-2">Price: R$ {product.price}</p>
+      <p className="mb-2">Seller's Phone: {userPhone}</p>
+      {product.userId === userId && (
+        <button onClick={() => onDelete(product.id)} className="bg-red-500 text-white py-2 px-4 rounded">Delete</button>
+      )}
     </li>
   );
 };
