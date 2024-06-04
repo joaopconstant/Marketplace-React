@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { auth, db } from '../firebase';
 import { collection, addDoc, deleteDoc, doc, onSnapshot, query, where } from 'firebase/firestore';
-import { onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 
 const Products = () => {
   const [products, setProducts] = useState([]);
@@ -11,19 +11,19 @@ const Products = () => {
   useEffect(() => {
     const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
       setUser(user);
-    });
+    })
 
     const unsubscribeSnapshot = onSnapshot(collection(db, 'products'), (snapshot) => {
       const productsData = [];
       snapshot.forEach((doc) => productsData.push({ ...doc.data(), id: doc.id }));
       setProducts(productsData);
-    });
+    })
 
     return () => {
       unsubscribeAuth();
       unsubscribeSnapshot();
-    };
-  }, []);
+    }
+  }, [])
 
   const handleAddProduct = async (e) => {
     e.preventDefault();
@@ -40,7 +40,7 @@ const Products = () => {
     } catch (error) {
       console.error("Error adding product: ", error);
     }
-  };
+  }
 
   const handleDeleteProduct = async (id, userId) => {
     try {
@@ -52,11 +52,23 @@ const Products = () => {
     } catch (error) {
       console.error("Error deleting product: ", error);
     }
-  };
+  }
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      history.push('/login');
+    } catch (error) {
+      console.error('Error logging out: ', error);
+    }
+  }
 
   return (
     <div>
       <h2>Products</h2>
+      {user && (
+        <button onClick={handleLogout}>Logout</button>
+      )}
       <form onSubmit={handleAddProduct}>
         <input
           type="text"
