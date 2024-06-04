@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { auth, db } from '../firebase';
-import { collection, addDoc, deleteDoc, doc, onSnapshot } from 'firebase/firestore';
+import { collection, addDoc, deleteDoc, doc, onSnapshot, query, where } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 
 const Products = () => {
@@ -42,9 +42,13 @@ const Products = () => {
     }
   };
 
-  const handleDeleteProduct = async (id) => {
+  const handleDeleteProduct = async (id, userId) => {
     try {
-      await deleteDoc(doc(db, 'products', id));
+      if (user && user.uid === userId) {
+        await deleteDoc(doc(db, 'products', id));
+      } else {
+        console.error("User is not authorized to delete this product");
+      }
     } catch (error) {
       console.error("Error deleting product: ", error);
     }
@@ -66,7 +70,9 @@ const Products = () => {
         {products.map((product) => (
           <li key={product.id}>
             {product.name}
-            <button onClick={() => handleDeleteProduct(product.id)}>Delete</button>
+            {user && user.uid === product.userId && (
+              <button onClick={() => handleDeleteProduct(product.id, product.userId)}>Delete</button>
+            )}
           </li>
         ))}
       </ul>
