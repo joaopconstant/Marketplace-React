@@ -78,7 +78,7 @@ const ProductCard = ({ product, userId, onDelete }) => {
       <p className="text-gray-700 font-semibold">{product.description}</p>
       <p className="text-green-500 flex gap-1 font-bold"> <HandCoins/> Preço: R$ {product.price}</p>
       <p className="text-gray-700 flex gap-1 font-bold"> <Phone/> Telefone: {userPhone}</p>
-      {product.userId === userId && <button onClick={() => onDelete(product.id)} className="bg-red-500 text-white max-w-20 py-1 px-2 rounded mt-2">Delete</button>}
+      {product.userId === userId && <button onClick={() => onDelete(product.id)} className="border border-gray-700 text-gray-700 max-w-20 py-1 px-2 rounded mt-2 hover:bg-red-500 hover:border-red-500 hover:text-white">Delete</button>}
     </div>
   );
 };

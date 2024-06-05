@@ -2,3 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 @tailwind variants;
+
+html {
+    scroll-behavior: smooth;
+}
+
+a, button {
+    transition: 300ms ease;
+}

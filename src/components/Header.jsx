@@ -17,7 +17,7 @@ const Header = ({ title }) => {
     <div className="bg-blue-500 p-4 text-white px-20">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">{title}</h1>
-        <button onClick={handleLogout} className="border py-2 px-4 rounded-full flex items-center hover:border-red-600 hover:bg-red-600">
+        <button onClick={handleLogout} className="border py-2 px-4 rounded-full flex items-center hover:border-red-500 hover:bg-red-500">
         <LogOut className='mr-2'/>
         Logout
         </button>
