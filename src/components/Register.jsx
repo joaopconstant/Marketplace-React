@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { auth, db } from '../firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
+import { Mail, LockKeyhole, Phone } from 'lucide-react';
 
 const Register = () => {
   const [email, setEmail] = useState('');
@@ -29,24 +30,27 @@ const Register = () => {
       <h3 className='mb-6'>Informe os seus dados</h3>
       <form onSubmit={handleRegister} className="w-full max-w-sm">
         <div className="mb-4">
+          <h3 className='mb-2 flex gap-1'> <Mail strokeWidth={1.2}/> E-mail</h3>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="Seu melhor Email"
+            placeholder="seumelhor@email.com"
             className="border border-gray-300 rounded-md p-2 w-full"
           />
         </div>
         <div className="mb-4">
+          <h3 className='mb-2 flex gap-1'> <Phone strokeWidth={1.2}/> Celular</h3>
           <input
             type="text"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            placeholder="Seu número de celular"
+            placeholder="(00) 00000-0000"
             className="border border-gray-300 rounded-md p-2 w-full"
           />
         </div>
         <div className="mb-4">
+          <h3 className='mb-2 flex gap-1'> <LockKeyhole strokeWidth={1.2}/> Senha</h3>
           <input
             type="password"
             value={password}
