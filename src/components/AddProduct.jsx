@@ -63,9 +63,9 @@ const AddProduct = () => {
             required
             />
         </div>
-        <button type="submit" className="bg-green-500 text-white py-2 px-4 rounded w-full">Adicionar Anúncio</button>
+        <button type="submit" className="bg-teal-500 text-white py-2 px-4 rounded-full w-full">Adicionar Anúncio</button>
       </form>
-      <a href="/products" className='mt-2 font-extralight text-gray-400 hover:text-blue-500'>Clique aqui para voltar</a>
+      <a href="/products" className='mt-2 font-extralight text-zinc-400 hover:text-teal-500'>Clique aqui para voltar</a>
     </div>
     </>
   );

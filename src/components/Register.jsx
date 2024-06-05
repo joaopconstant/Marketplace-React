@@ -26,6 +26,7 @@ const Register = () => {
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
+      <img src="src\assets\logoy.png" alt="" />
       <h2 className="text-3xl font-bold mb-6">Crie sua conta!</h2>
       <h3 className='mb-6'>Informe os seus dados</h3>
       <form onSubmit={handleRegister} className="w-full max-w-sm">
@@ -59,9 +60,9 @@ const Register = () => {
             className="border border-gray-300 rounded-md p-2 w-full"
           />
         </div>
-        <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded w-full">Concluir Cadastro</button>
+        <button type="submit" className="bg-teal-500 text-white py-2 px-4 rounded-full w-full">Concluir Cadastro</button>
       </form>
-      <a href='/login' className=' mt-2 font-extralight text-gray-400 hover:text-blue-500'>Já possui cadastro? Acesse sua conta!</a>
+      <a href='/login' className=' mt-2 font-extralight text-gray-400 hover:text-teal-500'>Já possui cadastro? Acesse sua conta!</a>
     </div>
   );
 }
