@@ -1,21 +1,21 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Login from './components/Login';
 import Register from './components/Register';
 import Products from './components/Products';
+import AddProduct from './components/AddProduct';
+import Cart from './components/Cart';
 import { onAuthStateChanged } from 'firebase/auth';
-import { useState, useEffect } from 'react';
 import { auth } from './firebase';
 import './App.css';
-import AddProduct from './components/AddProduct';
 
 function App() {
   const [user, setUser] = useState(null);
 
-  useEffect(()=> {
+  useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, setUser);
     return () => unsubscribe();
-  })
+  }, []);
 
   return (
     <Router>
@@ -30,11 +30,14 @@ function App() {
           <Route path='/products' render={() => (
             user ? <Products /> : <Login />
           )} />
+          <Route path='/cart' render={() => (
+            user ? <Cart /> : <Login />
+          )} />
           <Route path='/' exact component={Login} />
         </Switch>
       </div>
     </Router>
-  )
+  );
 }
 
-export default App
+export default App;
