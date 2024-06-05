@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { auth, db } from '../firebase';
+import { auth, db, storage } from '../firebase';
 import { collection, deleteDoc, getDoc, doc, onSnapshot, query } from 'firebase/firestore';
+import { ref, deleteObject } from 'firebase/storage';
 import { onAuthStateChanged } from 'firebase/auth';
 import Header from './Header';
 import { HandCoins, Phone } from 'lucide-react';
@@ -30,12 +31,14 @@ const Products = () => {
   }, []);
 
   const handleClick = () => {
-    history.push('/addproducts')
-  }
+    history.push('/addproducts');
+  };
 
-  const handleDeleteProduct = async (id) => {
+  const handleDeleteProduct = async (id, imageUrl) => {
     try {
       await deleteDoc(doc(db, 'products', id));
+      const imageRef = ref(storage, imageUrl);
+      await deleteObject(imageRef);
     } catch (error) {
       console.error("Error deleting product: ", error);
     }
@@ -43,19 +46,19 @@ const Products = () => {
 
   return (
     <>
-    <Header title="Products" />
-    <div className="px-20 py-5">
-      <img src="src\assets\banner.png" alt="Banner" className=' rounded-2xl mt-5'/>
-      <div className='flex justify-between items-center py-5'>
-        <h2 className='text-xl font-medium'>Todos os anúncios</h2>
-        <button className="bg-teal-500 text-white max-w-20 py-1 px-2 rounded mt-2" onClick={handleClick}>Anunciar</button>
+      <Header title="Products" />
+      <div className="px-20 py-5">
+        <img src="src/assets/banner.png" alt="Banner" className="rounded-2xl mt-5" />
+        <div className="flex justify-between items-center py-6">
+          <h2 className="text-xl font-medium">Todos os anúncios</h2>
+          <button className="bg-teal-500 text-white max-w-20 py-1 px-2 rounded mt-2" onClick={handleClick}>Anunciar</button>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-10">
+          {products.map((product) => (
+            <ProductCard key={product.id} product={product} userId={user.uid} onDelete={handleDeleteProduct} />
+          ))}
+        </div>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 my-6">
-        {products.map((product) => (
-          <ProductCard key={product.id} product={product} userId={user.uid} onDelete={handleDeleteProduct} />
-        ))}
-      </div>
-    </div>
     </>
   );
 };
@@ -75,11 +78,19 @@ const ProductCard = ({ product, userId, onDelete }) => {
 
   return (
     <div className="border border-gray-300 rounded-3xl p-4 bg-white flex flex-col gap-2">
+      {product.imageUrl && <img src={product.imageUrl} alt={product.name} className="w-full h-80 object-cover rounded-2xl" />}
       <h3 className="text-xl font-bold">{product.name}</h3>
       <p className="text-gray-700 font-semibold">{product.description}</p>
-      <p className="text-teal-500 flex gap-1 font-bold"> <HandCoins/> Preço: R$ {product.price}</p>
-      <p className="text-gray-700 flex gap-1 font-bold"> <Phone/> Telefone: {userPhone}</p>
-      {product.userId === userId && <button onClick={() => onDelete(product.id)} className="border border-gray-700 text-gray-700 max-w-20 py-1 px-2 rounded mt-2 hover:bg-red-500 hover:border-red-500 hover:text-white">Delete</button>}
+      <p className="text-teal-500 flex gap-1 font-bold"><HandCoins /> Preço: R$ {product.price}</p>
+      <p className="text-gray-700 flex gap-1 font-bold"><Phone /> Telefone: {userPhone}</p>
+      {product.userId === userId && (
+        <button
+          onClick={() => onDelete(product.id, product.imageUrl)}
+          className="border border-gray-700 text-gray-700 max-w-20 py-1 px-2 rounded mt-2 hover:bg-red-500 hover:border-red-500 hover:text-white"
+        >
+          Delete
+        </button>
+      )}
     </div>
   );
 };
