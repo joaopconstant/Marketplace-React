@@ -8,9 +8,11 @@ const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [phone, setPhone] = useState('');
+  const [error, setError] = useState('');
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    setError('');  // Limpa a mensagem de erro antes de tentar o registro
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
@@ -21,14 +23,16 @@ const Register = () => {
       });
     } catch (error) {
       console.error("Error registering: ", error);
+      setError('Falha no cadastro. Verifique suas informações e tente novamente.');
     }
-  }
+  };
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
-      <img src="src\assets\logoy.png" alt="" />
+      <img src="src/assets/logoy.png" alt="Logo E-Tech" />
       <h2 className="text-3xl font-bold mb-6">Crie sua conta!</h2>
       <h3 className='mb-6'>Informe os seus dados</h3>
+      {error && <div className="bg-red-200 text-red-700 p-2 rounded mb-4">{error}</div>}
       <form onSubmit={handleRegister} className="w-full max-w-sm">
         <div className="mb-4">
           <h3 className='mb-2 flex gap-1'> <Mail strokeWidth={1.2}/> E-mail</h3>
@@ -65,6 +69,6 @@ const Register = () => {
       <a href='/login' className=' mt-2 font-extralight text-gray-400 hover:text-teal-500'>Já possui cadastro? Acesse sua conta!</a>
     </div>
   );
-}
+};
 
 export default Register;
